@@ -8,7 +8,7 @@
 
   * **🎨 极致视觉**：模拟 iOS 26 概念设计，拥有动态流体背景、高斯模糊玻璃拟态 (Glassmorphism) 及 Squircle 连续曲率圆角。
   * **⚡️ 极速性能**：
-      * **智能缓存**：主数据 5 分钟缓存，站点状态 12 小时缓存，拒绝多余请求。
+      * **智能缓存**：主数据 5 分钟缓存，站点状态 1 小时缓存，拒绝多余请求。
       * **图片懒加载**：原生 `loading="lazy"` + `decoding="async"`。
       * **体积优化**：前端自动压缩上传图片（Canvas），解决 KV 存储限制。
   * **🔒 安全隐私**：
@@ -42,7 +42,7 @@
 #### 2\. 性能与网络优化
 
   - [x] **请求熔断机制**：
-      - **站点状态检测**：引入 LocalStorage 缓存，有效期 **1 小时**。未过期时直接读取缓存，将 Worker 请求数降低 95% 以上。
+      - **站点状态检测**：引入 LocalStorage 缓存，有效期 **12 小时**。未过期时直接读取缓存，将 Worker 请求数降低 95% 以上。
       - **主数据同步**：引入 **5 分钟** 间隔锁，避免频繁刷新导致重复拉取巨大的 JSON 数据。
   - [x] **资源加载优化**：
       - 为所有图标添加 `loading="lazy"` 和 `decoding="async"` 属性，提升首屏渲染速度。
@@ -93,17 +93,16 @@
 在 KV 中手动添加一个键值对：
 
   - **Key**: `site_password`
-  - **Value**: `kk321`
+  - **Value**: `你的访问密码`
 
 ### 4\. 前端配置
 
 修改 `script.js` 顶部的 `API_BASE` 变量为你自己的 Worker 地址：
 
 ```javascript
-const API_BASE = "https://nav-sync.2536319853.workers.dev/";
+const API_BASE = "https://你的worker地址.workers.dev";
 ```
 
 -----
-
 
 Copyright © 2025 MangaMap. All rights reserved.
