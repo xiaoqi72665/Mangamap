@@ -1,0 +1,16 @@
+{
+  "name": "MangaMap",
+  "short_name": "MangaMap",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000212",
+  "theme_color": "#000212",
+  "description": "您的私人数字中枢",
+  "icons": [
+    {
+      "src": "image/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
