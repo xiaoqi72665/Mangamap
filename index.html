@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#000212">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>MangaMap · 灵动导航</title>
-  <title>MangaMap · 灵动导航</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="blackcat.svg">  
   <link rel="apple-touch-icon" href="image/logo.png">  
@@ -42,16 +41,40 @@
   </div>
 
   <header class="page-header">
-    <div class="title-block">
-      <p class="eyebrow">Personal OS</p>
-      <h2>MangaMap</h2>
-      <p class="subtitle">您的私人数字中枢。</p>
+      
+    <div class="profile-section">
+      <div class="avatar-box">
+        <img src="blackcat.svg" alt="头像" loading="lazy">
+      </div>
+      <div class="info-box">
+        <h1>MangaMap</h1>
+        <div class="badge">
+          <span>Designed by</span>
+          <span class="highlight">不鹤</span>
+        </div>
+      </div>
     </div>
-    <div class="actions">
-      <button id="addBtn" class="btn glass-btn">
-        <span class="icon">+</span> 新增
-      </button>
-      <button id="logoutBtn" class="btn ghost">锁定</button>
+    <div class="action-section">
+        <button id="themeBtn" class="circle-btn glass" title="切换主题" aria-label="切换主题">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+          </svg>
+        </button>
+        
+        <button id="addBtn" class="circle-btn glass" title="新增" aria-label="新增站点">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        
+        <button id="logoutBtn" class="circle-btn glass" title="锁定" aria-label="锁定">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </button>
     </div>
   </header>
 

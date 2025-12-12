@@ -28,6 +28,56 @@
   --font: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+body.theme-light {
+  /* 背景改为 iOS 浅灰 */
+  --bg: #f2f2f7;
+  
+  /* 玻璃变白 */
+  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4));
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shine: rgba(255, 255, 255, 0.8);
+  
+  /* 文字变黑 */
+  --text: #000000;
+  --text-secondary: rgba(60, 60, 67, 0.6);
+  --text-tertiary: rgba(60, 60, 67, 0.3);
+  
+  /* 阴影变淡 */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 针对明亮模式的特殊微调 */
+body.theme-light .favicon {
+  background: rgba(0, 0, 0, 0.05); /* 图标底座变深一点点以便区分 */
+  box-shadow: none;
+}
+body.theme-light .icon-btn {
+  background: rgba(255, 255, 255, 0.8); /* 按钮变白 */
+  color: #000;
+  border-color: rgba(0,0,0,0.1);
+}
+body.theme-light .nav-chip {
+  background: rgba(0,0,0,0.05);
+  color: #666;
+}
+body.theme-light .nav-chip.active {
+  color: #fff; /* 选中还是白色 */
+}
+
+/* --- 🌈 多彩模式 (Cyber/Colorful) --- */
+/* 类似于 Cyberpunk 风格，更强的霓虹感 */
+body.theme-colorful {
+  --bg: #2b0052; /* 深紫背景 */
+  --glass-bg: linear-gradient(135deg, rgba(255, 0, 128, 0.15), rgba(0, 200, 255, 0.15));
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --text: #fff;
+  
+  /* 强化的光球效果 (通过 JS 改变 Orb 颜色太复杂，我们用 CSS filter 偷懒) */
+}
+body.theme-colorful .background-glow {
+  filter: hue-rotate(45deg) blur(60px); /* 整体色调偏移 */
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -113,50 +163,171 @@ body {
 }
 
 /* =========================================
-   3. 布局与头部
+   3. 布局与头部 (居中 Hero 风格重构)
    ========================================= */
 .page-header {
+  position: relative; /* 为了放置绝对定位的按钮 */
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center; /* 水平居中 */
+  justify-content: center;
   margin-bottom: 40px;
-  animation: fadeIn 0.8s ease-out;
+  padding: 20px 0;
+  text-align: center;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* --- 个人身份区 (居中布局) --- */
+.profile-section {
+  display: flex;
+  flex-direction: column; /* 上下图文 */
+  align-items: center;
+  gap: 16px;
 }
 
-.eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--accent-primary);
-  margin-bottom: 8px;
-  text-shadow: 0 0 10px rgba(10, 132, 255, 0.5);
+/* 头像容器 */
+.avatar-box {
+  position: relative;
+  width: 80px;   /* 整体尺寸 */
+  height: 80px;
+  border-radius: 50%;
+  
+  /* 核心：利用 padding 留出空隙显示背景 */
+  padding: 3px; 
+  
+  /* 这里是那个彩色的圆环渐变 */
+  background: linear-gradient(135deg, #0a84ff, #bf5af2, #ff9f0a);
+  background-size: 200% 200%;
+  animation: borderRotate 4s ease infinite; /* 让圆环颜色缓缓流动 */
+  
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4); /* 加强阴影 */
+  flex-shrink: 0;
 }
 
-h2 {
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+/* 明亮模式下，减弱头像阴影 */
+body.theme-light .avatar-box {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.avatar-box img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--bg); /* 加粗隔离边框 */
+  background-color: var(--bg);
+}
+
+/* 文字信息 */
+.info-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-box h1 {
+  font-size: 36px; /* 再次加大一点，更霸气 */
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+  
+  /* 🟢 修复 'g' 被切：行高设为 1.3，底部多留 10px */
+  line-height: 1.3; 
+  padding-bottom: 10px;
+  /* 抵消掉 padding 带来的位移，保持视觉居中 */
+  margin-bottom: -10px;
+
+  /* 默认深色模式：白色流光渐变 */
   background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 6px;
+  /* 增加文字阴影，防止背景太亮时看不清 */
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
 }
 
-.subtitle {
+/* 🟢 修复白色主题看不清 */
+body.theme-light .info-box h1 {
+  /* 改为深灰色渐变 */
+  background: linear-gradient(180deg, #2c3e50 0%, #000000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none; /* 白色主题不需要太重的阴影 */
+}
+
+/* "Designed by 不鹤" 徽章 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
   color: var(--text-secondary);
-  font-size: 1.1rem;
-  font-weight: 400;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 12px;
+  border-radius: 100px; /* 胶囊形状 */
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.actions {
+.badge .highlight {
+  color: #fff;
+  font-weight: 600;
+}
+
+body.theme-light .badge {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+/* --- 右侧按钮组 (改为绝对定位悬浮在右上角) --- */
+.action-section {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   gap: 12px;
+}
+
+.circle-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 玻璃按钮样式 */
+.circle-btn.glass {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.circle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1) rotate(5deg); /* 悬停时轻微旋转放大，很好玩 */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.circle-btn:active {
+  transform: scale(0.95);
+}
+
+/* 响应式微调 */
+@media (max-width: 400px) {
+  .info-box h1 { font-size: 20px; }
+  .avatar-box { width: 44px; height: 44px; }
+  .badge { font-size: 11px; padding: 2px 6px; }
+  .circle-btn { width: 40px; height: 40px; }
 }
 
 /* =========================================
@@ -220,11 +391,15 @@ h2 {
    ========================================= */
 .category-nav {
   display: flex;
+  justify-content: center;
   gap: 12px;
   margin-bottom: 32px;
-  padding-bottom: 4px;
+  
+  /* 🟢 修复：增加下方的 padding (从 4px 改为 20px)，给光晕留位置 */
+  padding: 10px 4px 20px 4px; 
+  
   overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
 .category-nav::-webkit-scrollbar { display: none; }
 
@@ -254,238 +429,334 @@ h2 {
   box-shadow: 0 0 20px rgba(10, 132, 255, 0.4);
 }
 
+
+
 /* =========================================
-   6. 网格与卡片 (Widget 风格重构)
+   6. Card grid
    ========================================= */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .link-grid {
   display: grid;
-  /* 调整列宽，让卡片稍微宽一点，适应横向布局 */
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-  padding-bottom: 40px;
+  /* 📉 改动：从 260px 改为 200px，卡片更窄更精致 */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  /* 间距稍微收紧一点点 */
+  gap: 16px; 
+  align-items: stretch;
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
   position: relative;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* 📉 内边距稍微减小，因为卡片变窄了 */
+  padding: 14px; 
   overflow: hidden;
-  height: 90px; /* 固定高度，确保整齐 */
+  /* 🍎 iOS 26 风格：加大圆角，极其圆润 */
+  border-radius: 24px; 
+  
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.3s ease, 
+              border-color 0.3s ease;
 }
 
-/* 悬停效果：轻微上浮，光影增强 */
 .card:hover {
-  transform: translateY(-4px);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .card-body {
   display: flex;
-  align-items: center; /* 确保垂直居中 */
-  gap: 14px; /* 稍微拉大一点图标和文字的间距 */
-  padding: 16px;
-  color: inherit;
+  align-items: center;
+  gap: 14px;
   text-decoration: none;
-  flex: 1; /* 填满卡片高度 */
+  color: inherit;
 }
 
-/* 图标样式优化 */
 .favicon {
-  /* 稍微加大一点尺寸，更有分量感 */
+  /* 📉 尺寸缩小：适配窄卡片，比例更协调 */
   width: 48px;
   height: 48px;
-  flex-shrink: 0;
   
-  /* iOS 风格大圆角 (近似 Squircle) */
-  border-radius: 14px;
+  /* 🍎 核心：Squircle 圆角逻辑 */
+  /* 这里的 14px 是配合卡片 24px 圆角的最佳视觉平衡点 */
+  border-radius: 14px; 
   
-  /* 核心修改：去掉了原本的 border */
-  /* border: 1px solid var(--border);  <-- 删掉这行 */
-  
-  /* 核心修改：使用更亮的背景和微妙的内发光来界定边缘，模拟玻璃块 */
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: grid;
   place-items: center;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-}
-
-/* 悬停卡片时，图标轻微放大，增加灵动感 */
-.card:hover .favicon {
-    transform: scale(1.05);
-}
-
-.favicon {
-  /* 1. 保持尺寸，或者稍微加大一点点更有分量 */
-  width: 50px; 
-  height: 50px;
   flex-shrink: 0;
-
-  /* 2. 核心修改：去掉了原有的实线边框 */
-  border: none;
-  
-  /* 3. 确保有足够大的圆角 (iOS 风格 Squircle) */
-  border-radius: 14px;
-
-  /* 4. 新的材质感： */
-  /* 用一个比卡片背景稍微亮一点、不透明一点的材质来突出显示 */
-  background: rgba(255, 255, 255, 0.15);
-  /* 加一个极其微弱的内发光描边，替代生硬的 border，模拟玻璃边缘反光 */
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  
-  /* 居中对齐内部图标 */
-  display: grid;
-  place-items: center;
   overflow: hidden;
-  /* 加上过渡动画，让悬停效果更丝滑 */
-  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-/* --- 内部实际的图标图片 --- */
 .favicon img {
-  /* 5. 核心修改：让图标更大 */
-  /* 将宽高比例从原来的 70% 或 80% 提升到 90%，填满容器 */
   width: 100%;
   height: 100%;
   object-fit: contain;
-  
-  /* 给图标本身加一点点投影，让它浮起来，更有层次感 */
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  display: block;
 }
 
 .card-text {
+  flex: 1; /* 占满右侧空间 */
+  min-width: 0; /* 必须加这个，否则 flex 里的省略号会失效 */
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  flex: 1;
-  min-width: 0;
-  
-  /* --- 关键修正 --- */
-  /* 数学居中往往视觉偏下，用负边距强制往上提 3px，抵消视觉偏差 */
-  margin-top: -3px; 
+  justify-content: center; /* 垂直居中 */
+  height: 100%; /* 撑满高度 */
 }
 
 .card-text h4 {
-  font-size: 16px; /* 保持字号 */
+  /* 关键：去掉下边距 (原为 margin: 0 0 6px 0) */
+  margin: 0; 
+  
+  font-size: 16px;
   font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--text);
-  margin: 0;
-  /* 将行高设为 1，消除文字上下的隐形留白 */
-  line-height: 1; 
-  padding-bottom: 4px; /* 只在标题和副标题之间加一点点硬间距 */
+  
+  /* 保持单行省略号 */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  
+  /* 优化：增加一点行高，防止文字被切 */
+  line-height: 1.2;
 }
 
-/* 副标题 (URL) */
 .card-text p {
-  font-size: 13px;
-  color: var(--muted);
-  opacity: 0.8;
-  margin: 0;
-  /* 将行高设为 1 */
-  line-height: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  /* 稍微往下移一点点，防止跟标题粘太紧，但保持整体重心偏上 */
-  padding-top: 2px; 
+  display: none; /* 直接隐藏 URL */
 }
 
-/* --- 悬浮操作栏 (右上角) --- */
 .card-actions {
   position: absolute;
   top: 8px;
   right: 8px;
   display: flex;
-  gap: 6px;
-  z-index: 10;
+  gap: 4px;     /* 间距缩小 */
+  padding: 3px; /* 内边距缩小 */
   
-  /* 默认状态：隐藏并上移 */
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  transform: translateY(10px) scale(0.9); 
   opacity: 0;
-  transform: translateY(-10px) scale(0.9);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* 弹性动画 */
-  pointer-events: none; /* 隐藏时不阻挡点击 */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10;
+  pointer-events: none;
 }
 
-/* 关键修复：鼠标悬停卡片时，让按钮组显示出来 */
 .card:hover .card-actions {
   opacity: 1;
-  transform: translateY(0) scale(1);
   pointer-events: auto;
+  /* 🚀 最终位置：回到原位，视觉上就是"向上浮出" */
+  transform: translateY(0) scale(1);
 }
 
-/* 鼠标悬停卡片时，图标容器稍微变亮，增加交互感 */
-.card:hover .favicon {
-    background: rgba(255, 255, 255, 0.25);
+.card:hover .card-actions {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* 按钮样式：圆形玻璃按钮 */
 .icon-btn {
-  width: 32px;
-  height: 32px;
+  width: 24px;   /* 📏 再次缩小 */
+  height: 24px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(0, 0, 0, 0.5); /* 深色背景，对比度更高 */
-  backdrop-filter: blur(8px);
-  color: #fff;
+  border: none;
+  padding: 0;
   display: grid;
   place-items: center;
   cursor: pointer;
-  padding: 0;
-  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.8);
+  
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+    
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* 内部图标也缩小一点 */
+.icon-btn svg {
+  width: 12px;   /* 📏 对应缩小 */
+  height: 12px;
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+
+/* 🖱️ 悬停效果：变亮、上浮 */
 .icon-btn:hover {
-  background: #fff;
-  color: #000;
-  transform: scale(1.1);
-}
-
-.icon-btn.danger:hover {
-  background: var(--accent-danger);
+  background: rgba(255, 255, 255, 0.25);
   color: #fff;
-  border-color: var(--accent-danger);
+  transform: translateY(-2px) scale(1.1); /* 微微上浮 */
+  box-shadow: 
+    inset 0 1px 0px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.2); /* 投影变深 */
 }
 
-/* 移动端优化：默认显示按钮，但颜色淡一点 */
-@media (max-width: 768px) {
-  .card-actions {
-    opacity: 1;
-    transform: none;
-    top: 10px;
-    right: 10px;
-  }
-  .icon-btn {
-    background: rgba(0,0,0,0.2);
-    width: 28px;
-    height: 28px;
-  }
+
+/* 🔴 删除按钮的特殊液态红 */
+.icon-btn.danger:hover {
+  background: linear-gradient(135deg, rgba(255, 59, 48, 0.8), rgba(255, 59, 48, 0.4));
+  color: #fff;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    0 4px 10px rgba(255, 59, 48, 0.4);
 }
 
-.icon-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-.icon-btn.danger:hover { background: rgba(255, 69, 58, 0.2); color: var(--accent-danger); }
+.card.empty {
+  text-align: center;
+  border-style: dashed;
+  color: var(--text-secondary);
+}
 
-/* ======== 网站状态点（绿/红/灰）======== */
+/* =========================================
+   3. 布局与头部 (居中 Hero 风格重构)
+   ========================================= */
+.page-header {
+  position: relative; /* 为了放置绝对定位的按钮 */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 水平居中 */
+  justify-content: center;
+  margin-bottom: 40px;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* --- 个人身份区 (居中布局) --- */
+.profile-section {
+  display: flex;
+  flex-direction: column; /* 上下图文 */
+  align-items: center;
+  gap: 16px;
+}
+
+/* 头像容器 */
+.avatar-box {
+  position: relative;
+  width: 80px;   /* 加大头像 */
+  height: 80px;
+  border-radius: 50%;
+  padding: 3px;
+  /* 彩色圆环 */
+  background: linear-gradient(135deg, #0a84ff, #bf5af2, #ff9f0a);
+  background-size: 200% 200%;
+  animation: borderRotate 4s ease infinite;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4); /* 加强阴影 */
+  flex-shrink: 0;
+}
+
+/* 明亮模式下，减弱头像阴影 */
+body.theme-light .avatar-box {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.avatar-box img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--bg); /* 加粗隔离边框 */
+  background-color: var(--bg);
+}
+
+/* 文字信息 */
+.info-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-box h1 {
+  font-size: 36px; /* 再次加大一点，更霸气 */
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+  
+  /* 🟢 修复 'g' 被切：行高设为 1.3，底部多留 10px */
+  line-height: 1.3; 
+  padding-bottom: 10px;
+  /* 抵消掉 padding 带来的位移，保持视觉居中 */
+  margin-bottom: -10px;
+
+  /* 默认深色模式：白色流光渐变 */
+  background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* 增加文字阴影，防止背景太亮时看不清 */
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
+
+/* 🟢 修复白色主题看不清 */
+body.theme-light .info-box h1 {
+  /* 改为深灰色渐变 */
+  background: linear-gradient(180deg, #2c3e50 0%, #000000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none; /* 白色主题不需要太重的阴影 */
+}
+
+/* "Designed by 不鹤" 徽章 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.theme-light .badge {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+/* --- 右侧按钮组 (改为绝对定位悬浮在右上角) --- */
+.action-section {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 12px;
+}
+
+
+
+/* ======== 网站状态点 ======== */
 .status-indicator {
   position: absolute;
+  /* 🟢 修复：移到右下角 */
   right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
+  bottom: 14px; /* 原来可能是 top: 50% */
+  top: auto; 
+  transform: none;
+  
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  border: 3px solid var(--muted); /* 默认灰色 */
-  box-sizing: border-box;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  
+  /* 加个强一点的边框，防止和背景色混在一起 */
+  border: 2px solid rgba(255,255,255,0.2); 
+  box-shadow: 0 0 5px rgba(0,0,0,0.5); /* 加点阴影更清晰 */
+  
+  z-index: 5;
+  transition: all 0.3s ease;
 }
-
 /* 状态：正常 */
 .status-ok {
   background: var(--accent-success);
@@ -641,20 +912,135 @@ input:focus, select:focus {
 /* =========================================
    9. 响应式适配
    ========================================= */
-@media (max-width: 700px) {
+@media (max-width: 400px) {
+  .info-box h1 { font-size: 20px; }
+  .avatar-box { width: 44px; height: 44px; }
+  .badge { font-size: 11px; padding: 2px 6px; }
+  .circle-btn { width: 40px; height: 40px; }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 20px 16px; /* 减小手机端边距 */
+  }
+
+  /* 核心修复：手机上保持“左头像-右按钮”的一行布局 */
   .page-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    
+    /* ⬆️ 顶部留白加大到 40px (原来是 20px)，给头像腾位置 */
+    padding-top: 40px; 
+    margin-bottom: 30px;
+    gap: 16px; /* 头像和文字之间的间距加大 */
+    position: relative;
   }
-  .actions { width: 100%; }
-  .actions .btn { flex: 1; }
+  .profile-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  /* 调整手机上的头像大小 */
+  .avatar-box {
+    /* 📏 从 52px 放大到 76px (接近电脑端大小) */
+    width: 76px;  
+    height: 76px;
+    padding: 3px; /* 彩色圆环稍微粗一点 */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); /* 阴影加重，增加立体感 */
+  }
+
+  .action-section {
+    top: 0;
+    right: 0;
+    /* 你的按钮已经是绝对定位了，这样它们会悬浮在头像右上侧 */
+  }
   
-  .card-actions {
-    opacity: 1;
-    transform: none;
-    padding-top: 0;
-    margin-top: 0;
+  /* 调整文字大小 */
+  .info-box h1 {
+    /* 📏 从 20px 放大到 28px */
+    font-size: 28px; 
+    line-height: 1.2;
+    padding-bottom: 4px;
+    margin-bottom: -4px;
   }
-  .orb { opacity: 0.4; } /* 移动端降低光效不透明度 */
+  .badge {
+    font-size: 13px; /* 从 11px 恢复到正常大小 */
+    padding: 4px 12px;
+  }
+  
+  /* 如果手机屏幕太窄，可以隐藏 Designed by 标签，只留名字 */
+  /* .badge span:first-child { display: none; } */
+
+  /* 调整按钮大小 */
+  .circle-btn { width: 40px; height: 40px; }
+  .circle-btn svg { width: 18px; height: 18px; }
+
+  /* 调整卡片网格，手机上改为单列或者紧凑双列 */
+  .link-grid {
+    grid-template-columns: 1fr; /* 强制单列，或者 repeat(2, 1fr) 看你喜好 */
+    gap: 16px;
+  }
+  
+  /* 修复操作栏在手机上的位置 */
+  .card-actions {
+    opacity: 1; /* 手机无法悬停，建议常驻显示或半透明 */
+    transform: none;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.4); /* 加个深色底防止看不清 */
+    border-radius: 20px;
+    padding: 4px;
+  }
+}
+
+/* =========================================
+   🌞 白色主题 (Light Mode) 专属修正
+   ========================================= */
+
+/* 1. 修复名字看不见的问题：改为深黑色 */
+body.theme-light .badge .highlight {
+  color: #000000; /* 纯黑 */
+  font-weight: 700;
+}
+
+/* 2. 修复分类导航选中状态：改为黑底白字 (iOS 风格) */
+body.theme-light .nav-chip.active {
+  color: #000000; /* 选中变成黑色实心 */
+  background: #ffffff;      /* 文字变成白色 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 柔和的黑色投影 */
+  border: none;        /* 去掉边框 */
+}
+
+/* 3. 白色主题下，普通未选中的分类稍微深一点，增加对比 */
+body.theme-light .nav-chip {
+  background: rgba(0, 0, 0, 0.05);
+  color: #666;
+  border: none;
+}
+body.theme-light .nav-chip:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   ⚪️ 白色主题 - 右上角按钮修正
+   ========================================= */
+body.theme-light .circle-btn {
+  /* 1. 图标颜色：改成纯黑 */
+  color: #000000;
+  
+  /* 2. 背景颜色：改成淡淡的黑色半透明 (让它在白底上显现出来) */
+  background: rgba(0, 0, 0, 0.05);
+  
+  /* 3. 边框颜色：加深一点，增加轮廓感 */
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 🖱️ 悬停状态适配 */
+body.theme-light .circle-btn:hover {
+  /* 悬停时背景加深 */
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

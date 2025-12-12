@@ -545,10 +545,46 @@ function handleFileUpload(event) {
 
     // 4. 加载数据（无论是否登录都预加载数据，提升体验）
     await loadLinks();
+
+      // --- 主题切换逻辑 ---
+    const themeBtn = document.getElementById("themeBtn");
+    const themes = ["theme-dark", "theme-light", "theme-colorful"];
+    let currentThemeIndex = 0;
+
+    function applyTheme(index) {
+      // 移除所有主题类
+      document.body.classList.remove(...themes);
+      // 如果不是默认(索引0)，则添加对应类
+      if (index > 0) {
+        document.body.classList.add(themes[index]);
+      }
+      
+      // 保存设置
+      localStorage.setItem("mangamap_theme_index", index);
+      currentThemeIndex = index;
+
+      // 更新按钮图标 (可选：如果你想根据主题变图标)
+      // 简单起见，这里可以让图标转一下表示切换成功
+      themeBtn.style.transform = "rotate(360deg)";
+      setTimeout(() => themeBtn.style.transform = "", 300);
+    }
+
+    // 初始化：读取上次的主题
+    const savedTheme = localStorage.getItem("mangamap_theme_index");
+    if (savedTheme) {
+      applyTheme(parseInt(savedTheme));
+    }
+
+    // 绑定点击事件
+    if (themeBtn) {
+      themeBtn.addEventListener("click", () => {
+        // 循环切换：0 -> 1 -> 2 -> 0
+        const nextIndex = (currentThemeIndex + 1) % themes.length;
+        applyTheme(nextIndex);
+      });
+    }
   }
 
-  // 启动应用
-  document.addEventListener("DOMContentLoaded", init);
 
   // ... (原有的 init 函数) ...
 
