@@ -1044,3 +1044,33 @@ body.theme-light .circle-btn:hover {
   transform: scale(1.1) rotate(5deg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+/* =========================================
+   🖐️ 拖拽排序样式
+   ========================================= */
+
+/* 正在被拖动的卡片 */
+.sortable-drag {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05); /* 稍微放大，这就是“拿起来”的感觉 */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  cursor: grabbing;
+  z-index: 9999;
+}
+
+/* 占位符（原来的位置） */
+.sortable-ghost {
+  opacity: 0.2; /* 变淡，表示这里空了 */
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed rgba(255,255,255,0.3);
+}
+
+/* 为了防止手机上滚动时误触拖拽，建议给 .card 加这个 */
+.card {
+  /* 防止文字被选中，干扰拖拽体验 */
+  user-select: none; 
+  -webkit-user-select: none;
+  /* 只有长按或明确拖拽时才触发，配合下面的 JS 设置 */
+  touch-action: manipulation; 
+}

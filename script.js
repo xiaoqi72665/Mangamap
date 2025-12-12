@@ -278,9 +278,10 @@
 
     filtered.forEach((link) => {
       const clone = template.content.cloneNode(true);
+      const cardElement = clone.querySelector(".card");
+      cardElement.dataset.id = link.id;
       const statusDot = clone.querySelector(".status-indicator");
       statusDot.classList.add("status-loading");
-
       const anchor = clone.querySelector("a");
       const img = clone.querySelector("img");
       const title = clone.querySelector("h4");
@@ -311,6 +312,44 @@
       linkGrid.appendChild(clone);
     });
   }
+
+  function initDragSort() {
+    const el = document.getElementById('linkGrid');
+    
+    // 创建 Sortable 实例
+    new Sortable(el, {
+      animation: 300,  // 动画时长 (毫秒)，越长越丝滑
+      delay: 200,      // 📱 手机端关键：长按 200ms 后才能拖动，防止和页面滚动冲突
+      delayOnTouchOnly: true, // 仅在触摸屏上启用延迟，电脑上还是秒拖
+      ghostClass: 'sortable-ghost', // 占位符样式类名
+      dragClass: 'sortable-drag',   // 拖动中样式类名
+      easing: "cubic-bezier(0.25, 1, 0.5, 1)", // iOS 风格的物理回弹曲线
+
+      // 🖱️ 拖拽结束后的回调
+      onEnd: function (evt) {
+        // 1. 获取当前视觉上的新顺序 (DOM 里的 ID 列表)
+        const newOrderIds = Array.from(el.querySelectorAll('.card')).map(card => card.dataset.id);
+
+        // 2. 重新排列内存中的 links 数组
+        // 逻辑：先把非当前分类的拿出来，再把当前分类的按新顺序排好，最后合并
+        
+        // A. 提取出不属于当前分类的链接 (它们没参与排序，保持原样)
+        const otherLinks = links.filter(l => (l.category || "漫画") !== selectedCategory);
+        
+        // B. 按照新 ID 列表，从总数据里把当前分类的链接找出来并重排
+        const sortedCurrentLinks = newOrderIds.map(id => links.find(l => l.id === id)).filter(Boolean);
+        
+        // C. 合并数据 (注意：这里会让当前分类的数据跑到数组最前面或最后面，但不影响分类显示)
+        links = [...sortedCurrentLinks, ...otherLinks];
+
+        // 3. 保存到本地和云端
+        saveLinks();
+        
+        // 可选：打印一下日志看效果
+        // console.log("新顺序已保存");
+      }
+    });
+  }  
 
   function handleDelete(id) {
     const target = links.find((l) => l.id === id);
@@ -545,7 +584,7 @@ function handleFileUpload(event) {
 
     // 4. 加载数据（无论是否登录都预加载数据，提升体验）
     await loadLinks();
-
+    initDragSort();
       // --- 主题切换逻辑 ---
     const themeBtn = document.getElementById("themeBtn");
     const themes = ["theme-dark", "theme-light", "theme-colorful"];
