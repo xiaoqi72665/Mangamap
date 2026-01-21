@@ -1,6 +1,6 @@
 # MangaMap · 灵动导航 (Personal OS)
 
-> 您的私人数字中枢。基于 Cloudflare Workers 的无服务器单页应用 (SPA)，采用 iOS 26 液态玻璃风格设计。
+> 您的私人数字中枢。基于 Cloudflare Workers 的无服务器单页应用 (SPA)，采用 iOS 26 液态玻璃风格设计的。
 
 ## ✨ 核心特性
 
